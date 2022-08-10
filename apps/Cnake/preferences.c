@@ -10,11 +10,11 @@ functions for preferences
 #include <stdlib.h>
 #include <time.h>
 
-#include "init.h"
-#include "game.h"
-#include "preferences.h"
-#include "controls.h"
-#include "menu.h"
+#include "inc/init.h"
+#include "inc/game.h"
+#include "inc/preferences.h"
+#include "inc/controls.h"
+#include "inc/menu.h"
 
 
 
@@ -26,7 +26,7 @@ void preferences(int *level, int *playground_width, int *playground_height) {
         case 0:
             *level = askLevel();
             break;
-        #if defined(WIN32) || defined(__linux__)
+        #if defined(WIN32)
         case 1:
             *playground_width = askPlaygroundWidth();
             break;

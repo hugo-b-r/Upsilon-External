@@ -10,17 +10,17 @@ main file for game
 #include <stdlib.h>
 #include <time.h>
 
-#include "init.h"
-#include "positions.h"
-#include "game.h"
-#include "preferences.h"
-#include "controls.h"
-#include "menu.h"
+#include "inc/init.h"
+#include "inc/positions.h"
+#include "inc/game.h"
+#include "inc/preferences.h"
+#include "inc/controls.h"
+#include "inc/menu.h"
 
 
 
 
-int main()
+int mainFunction()
 {
     int game_continue = 1;
     int level = 0;
@@ -53,6 +53,14 @@ int main()
 
 
 
+#if defined(WIN32)
+
+int main()
+{
+    return mainFunction();
+}
+
+#endif
 
 #if defined(NUMWORKS)
 
@@ -60,7 +68,7 @@ int main()
 
 int extapp_main()
 {
-    return main();
+    return mainFunction();
 }
 
 #endif

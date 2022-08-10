@@ -8,9 +8,9 @@ file for controls functions
 
 
 
-#include "controls.h"
-#include "game.h"
-#include "init.h"
+#include "inc/init.h"
+#include "inc/controls.h"
+#include "inc/game.h"
 
 
 
@@ -19,7 +19,7 @@ file for controls functions
     #include <stdint.h>
     
     #include "extapp_api.h"
-    #include "peripherals.h"
+    #include "inc/peripherals.h"
     
    
 
@@ -181,7 +181,7 @@ file for controls functions
 
 #endif
 
-#if defined(WIN32) || defined(__linux__)
+#if defined(WIN32) 
 
     #include <stdio.h>
     #include <stdlib.h>

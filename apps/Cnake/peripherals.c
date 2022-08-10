@@ -1,6 +1,8 @@
+#include "inc/init.h"
+
 #if defined(NUMWORKS)
 
-#include "peripherals.h"
+#include "inc/peripherals.h"
 #include "extapp_api.h"
 #include <string.h>
 
