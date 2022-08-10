@@ -1,4 +1,4 @@
-app_external_src += $(addprefix apps/external/app,\
+app_external_src += $(addprefix $(EXTAPP_PATH)/,\
     init.c \
     main.c \
     game.c \
