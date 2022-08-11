@@ -1,8 +1,8 @@
 /*
 
-controls.h
+menu.c
 
-file for controls functions
+file for interface functions
 
 */
 
@@ -17,6 +17,8 @@ file for controls functions
 #if defined(NUMWORKS)
 
     #include <stdint.h>
+    #include <stdio.h>
+    #include <stdlib.h>
     
     #include "extapp_api.h"
     #include "inc/peripherals.h"
@@ -26,8 +28,24 @@ file for controls functions
     void deathMsg(char *msg)
     {
         extapp_waitForVBlank();
-        extapp_drawTextSmall(msg, 0, 111, 0XFFFF, 0X0000, false);
+        extapp_drawTextSmall(msg, 0, 205, 0XFFFF, 0X0000, false);
+        waitForKeyPressed();
     }
+
+
+
+
+    void updateScore(int playground_height, int *level)
+    {   
+        extapp_waitForVBlank();
+        extapp_pushRectUniform(100, 218, 220, 22, 0x0000);
+        char digit_char[3]; //max score is smaller than 100
+        snprintf(digit_char, 3, "%d", *level);
+        extapp_waitForVBlank();
+        extapp_drawTextSmall(digit_char, 100, 224, 0xFFFF, 0x0000, false);
+        printf("%c", digit_char[0]);
+    }
+
 
 
 
@@ -44,8 +62,8 @@ file for controls functions
 
         extapp_pushRectUniform(fruit_x*10, 208 - (fruit_y*10), 10, 10, 0xF000);
         extapp_pushRectUniform(0, 218, 320, 22, 0x0000);
-        extapp_drawTextLarge("Points:", 0, 222, 0xFFFF, 0x0000, false);
-        extapp_waitForVBlank();
+        extapp_drawTextSmall("Points:", 0, 224, 0xFFFF, 0x0000, false);
+        updateScore(playground_height, level);
     }
 
 
@@ -63,19 +81,9 @@ file for controls functions
                 break;
 
             case NOTHING:
-                extapp_pushRectUniform(x*10, 208- (y*10), 10, 10, 0x0000);
+                extapp_pushRectUniform(x*10, 208- (y*10), 10, 10, 0xFFFF);
                 break;
         }
-    }
-
-
-
-
-    void reDraw(int playground_width, int playground_height, int current_length, int (*positions)[2][100], int fruit_x, int fruit_y, int *level)
-    {
-        
-        extapp_pushRectUniform(70, 218, 100, 22, 0x0000);
-
     }
 
 
@@ -100,7 +108,8 @@ file for controls functions
         
         extapp_drawTextSmall("(0) Start a new game", 0, 20 * 1, 0x0000, 0xFFFF, false);
         extapp_drawTextSmall("(1) Preferences", 0, 20 * 2, 0x0000, 0xFFFF, false);
-        extapp_drawTextSmall("(2) Quit", 0, 20 * 3, 0x0000, 0xFFFF, false);
+        extapp_drawTextSmall("(2) Reset score", 0, 20 * 3, 0x0000, 0xFFFF, false);
+        extapp_drawTextSmall("(3) Quit", 0, 20 * 4, 0x0000, 0xFFFF, false);
 
         extapp_waitForVBlank();
 
@@ -152,21 +161,31 @@ file for controls functions
         extapp_drawTextSmall("Enter level:", 0, 20 * 1, 0x0000, 0xFFFF, false);
 
         extapp_waitForVBlank();
-        //find a way to draw numbers
         
+        //extapp_pushRectUniform(85, 20, 1, 12, 0x0000);
+        
+        char level_char[3];
+
         while (1) {
             waitForKeyPressed();
             
             int key = extapp_getKey(true, NULL);
-            if (numworksFiguresInput(key) != -1) {
+            if (numworksFiguresInput(key) != -1  &&  level <= 100) {
                 level *= 10;
                 level += numworksFiguresInput(key);
-                //function to actualise score shown
+                snprintf(level_char, 3, "%d", level); 
+                extapp_pushRectUniform(80, 20, 100, 12, 0xFFFF);
+                extapp_drawTextSmall(level_char, 85, 20, 0x0000, 0XFFFF, false);
             } else {
-                switch (extapp_getKey(true, NULL)) {
+                switch (key) {
                 
                 case KEY_CTRL_DEL:
-                    level /= 10;
+                    if (level > 0) {
+                        level /= 10;
+                        snprintf(level_char, 3, "%d", level); 
+                        extapp_pushRectUniform(80, 20, 100, 12, 0xFFFF);
+                        extapp_drawTextSmall(level_char, 85, 20, 0x0000, 0XFFFF, false);
+                    }
                     break;
                 
                 case KEY_CTRL_OK:
@@ -277,7 +296,7 @@ file for controls functions
 
 
 
-    void reDraw(int playground_width, int playground_height, int current_length, int positions[2][100], int fruit_x, int fruit_y, int *level)
+    void updateScore(int playground_height, int *level)
     {
         COORD coord;
         coord.X = 8;
@@ -308,7 +327,8 @@ file for controls functions
         
         printf("- (0) Start a new game\n");
         printf("- (1) Preferences\n");
-        printf("- (2) Quit\n");
+        printf("- (2) Reset score\n");
+        printf("- (3) Quit\n");
         printf(">");
 
         scanf("%d", &choice);

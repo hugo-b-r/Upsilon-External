@@ -59,8 +59,7 @@ void game(int *level, int playground_width, int playground_height, int *game_con
     int orientation = 0;
 
     int command = -1;
-
-
+    
     int current_length = DEFAULT_LENGTH;
     int positions[2][100];
     int head_position = current_length - 1;
@@ -78,7 +77,8 @@ void game(int *level, int playground_width, int playground_height, int *game_con
         positions[1][i] += i;      
     }
 
-     
+    printf("%d", playground_height);
+ 
     //speed set up
     int last_clock = TIME;
     int move_time;
@@ -95,9 +95,8 @@ void game(int *level, int playground_width, int playground_height, int *game_con
 
     firstImage(playground_width, playground_height, current_length, positions, fruit_x, fruit_y, level);
 
-
+    printf("%d", playground_height);
     while (command != ENDGAME && command != QUIT) {
-        
         getEvent(&command);
         translateControl(&orientation, &command);
 
@@ -120,6 +119,8 @@ void game(int *level, int playground_width, int playground_height, int *game_con
                 assumed_length++;
                 incrLength(&positions, &current_length, 1, head_position);
                 *level += 1;
+                updateScore(playground_height, level);
+        
 
                 if (move_time == 5 * DEFAULT_MOVE_TIME) move_time -= DEFAULT_MOVE_TIME;
 
@@ -129,12 +130,8 @@ void game(int *level, int playground_width, int playground_height, int *game_con
 
             last_clock = TIME;
 
-            reDraw(playground_width, playground_height, current_length, positions, fruit_x, fruit_y, level);
         }
     }
-    printf("\n");
-
-    *level = 0;
 
     if (command == QUIT) *game_continue = 0;
 }

@@ -29,7 +29,6 @@ int mainFunction()
     int playground_height = PLAYGROUND_Y;
 
     welcomeMessage();
-
     while (game_continue) {
         
         switch (defaultMenu()) {
@@ -42,8 +41,11 @@ int mainFunction()
                 break;
         
             case 2:
-                return 0;
+                level = 0;
+                break;
             
+            case 3:
+                return 0;
             default:
                 continue;
         }

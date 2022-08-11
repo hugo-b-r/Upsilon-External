@@ -22,7 +22,7 @@ function for init and deinit
     #define DEFAULT_MOVE_TIME 5
 #elif defined(NUMWORKS)
     #define PLAYGROUND_X 32 
-    #define PLAYGROUND_Y 19
+    #define PLAYGROUND_Y 20
     #define DEFAULT_SPEED 100
     #define TIME extapp_millis()
     #define DEFAULT_MOVE_TIME 1
