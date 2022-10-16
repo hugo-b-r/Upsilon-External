@@ -87,7 +87,7 @@ const uint16_t palette_gray[4] = {0xFFFF, 0xAD55, 0x52AA, 0x0000};
 const uint16_t palette_gray_negative[4] = {0x0000, 0x52AA, 0xAD55, 0xFFFF};
 const uint16_t * palette = palette_peanut_GB;
 
-uint16_t eadk_color_from_gb_pixel(uint8_t gb_pixel) {
+uint16_t color_from_gb_pixel(uint8_t gb_pixel) {
     uint8_t gb_color = gb_pixel & 0x3;
     return palette[gb_color];
 }
@@ -96,7 +96,7 @@ void lcd_draw_line_centered(struct gb_s *gb, const uint8_t pixels[LCD_WIDTH], co
   struct priv_t *priv = gb->direct.priv;
 
   for(unsigned int x = 0; x < LCD_WIDTH; x++) {
-    priv->line_buffer[x] = eadk_color_from_gb_pixel(pixels[x]);
+    priv->line_buffer[x] = color_from_gb_pixel(pixels[x]);
   }
 
   extapp_pushRect((NW_LCD_WIDTH - LCD_WIDTH) / 2, (NW_LCD_HEIGHT - LCD_HEIGHT) / 2 + line, LCD_WIDTH, 1, priv->line_buffer);
@@ -107,7 +107,7 @@ static void lcd_draw_line_maximized(struct gb_s * gb, const uint8_t * input_pixe
   // Horizontally, we just double
   uint16_t output_pixels[2*LCD_WIDTH];
   for (int i=0; i<LCD_WIDTH; i++) {
-    uint16_t color = eadk_color_from_gb_pixel(input_pixels[i]);
+    uint16_t color = color_from_gb_pixel(input_pixels[i]);
     output_pixels[2*i] = color;
     output_pixels[2*i+1] = color;
   }
@@ -124,7 +124,7 @@ static void lcd_draw_line_maximized_ratio(struct gb_s * gb, const uint8_t * inpu
   // Horizontally, we multiply by 1.66 (160*1.66 = 266)
   uint16_t output_pixels[266];
   for (int i=0; i<LCD_WIDTH; i++) {
-    uint16_t color = eadk_color_from_gb_pixel(input_pixels[i]);
+    uint16_t color = color_from_gb_pixel(input_pixels[i]);
     // We can't use floats, so we use a fixed point representation
     output_pixels[166*i/100] = color;
     output_pixels[166*i/100+1] = color;
@@ -172,7 +172,7 @@ char* read_save_file(const char* name, size_t size) {
   } else {
     memset(output, 0xFF, size);
   }
-  
+
   free(save_name);
   
   return output;
@@ -214,7 +214,7 @@ void extapp_main() {
     .cart_ram = NULL
   };
   enum gb_init_error_e ret;
-  
+
   #if DUMMY_ROM
   priv.rom = DUMMY_ROM_VAR(DUMMY_ROM_NAME);
   const char * file_name = DUMMY_ROM_FILE(DUMMY_ROM_NAME);
@@ -250,7 +250,7 @@ void extapp_main() {
 
   // Init LCD
   gb_init_lcd(&gb, &lcd_draw_line_centered);
-  
+
   extapp_pushRectUniform(0, 0, NW_LCD_WIDTH, NW_LCD_HEIGHT, 0);
   
   running = true;
