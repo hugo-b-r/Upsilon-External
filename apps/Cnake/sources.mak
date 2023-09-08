@@ -1,10 +1,6 @@
-app_external_src += $(addprefix $(EXTAPP_PATH)/,\
-    main.c \
-    menu.c \
-    preferences.c \
-    controls.c \
-    init.c \
-    positions.c \
-    peripherals.c \
-    game.c \
+app_external_src += $(addprefix apps/external/app/,\
+	main.c \
+	game.c \
+	positions.c \
+	numworks.c \
 )

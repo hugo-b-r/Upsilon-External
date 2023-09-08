@@ -1,76 +1,100 @@
 /*
 
-main.c
+    main.c
+    Copyright (c) 2022 - 2023 Hugo Berthet-Rambaud
 
-main file for game
-
+    This file is part of Cnake which is MIT licensed. It should be included
+    with your copy of the code. See http://opensource.org/licenses/MIT.
+ 
 */
+
+
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-#include "inc/init.h"
-#include "inc/positions.h"
-#include "inc/game.h"
-#include "inc/preferences.h"
-#include "inc/controls.h"
-#include "inc/menu.h"
+#include "positions.h"
+#include "game.h"
+
+#ifdef WINDOWS
+    #include "windows.h"
+#elif defined LINUX
+    #include "linux.h"
+#elif defined NUMWORKS || defined EPSILON_VERSION
+    #include "numworks.h"
+#endif
 
 
 
+int main_function()
+{	
+	init_platform();
 
-int mainFunction()
-{
     int game_continue = 1;
-    int level = 0;
 
-    int playground_width = PLAYGROUND_X;
-    int playground_height = PLAYGROUND_Y;
-
-    welcomeMessage();
+    int playground_width = screen_x();
+    int playground_height = screen_y()-1;   // Minus 1 for the score line
+    print_at(playground_width/2-8, playground_height/2-3, "Welcome in Cnake!");    // Welcome the player
+    uni_sleep(1000);                       // The message lasts 1 second
     while (game_continue) {
-        
-        switch (defaultMenu()) {
-            case 0:
-                game(&level, playground_width, playground_height, &game_continue);
+        // Display options
+        print_at(playground_width/2-4, playground_height/2-1, "0 - Play!");
+        print_at(playground_width/2-4, playground_height/2+1, "1 - Exit");
+        switch (get_control_blocking()) {
+            case zero:
+                // Start a new game
+                game(playground_width, playground_height, &game_continue);
                 break;
         
-            case 1:
-                preferences(&level, &playground_width, &playground_height);
+            case quit:
+                gracefully_shutdown("Aloa...");
+                game_continue = 0;
                 break;
-        
-            case 2:
-                level = 0;
+            case one:
+                gracefully_shutdown("Aloa...");
+                game_continue = 0;
                 break;
-            
-            case 3:
-                return 0;
             default:
-                continue;
+                clear_screen();
+                print_at(playground_width/2-9, playground_height/2-2, "Not a good answer !");
+                print_at(playground_width/2-10, playground_height/2, "Please choose between");
+                print_at(playground_width/2-3, playground_height/2+2, "0 or 1.");
+                uni_sleep(1000);
+                clear_screen();
+                break;
+
         }
     }
+    gracefully_shutdown("Bye, bye...");
     return 0; 
 }
 
 
+#if defined(WINDOWS)
 
-#if defined(WIN32)
+    int main()
+    {
+        return main_function();
+    }
 
-int main()
-{
-    return mainFunction();
-}
+#elif defined NUMWORKS || defined EPSILON_VERSION
 
-#endif
+    #include "extapp_api.h"
 
-#if defined(NUMWORKS)
+    int extapp_main()
+    {
+        return main_function();
+    }
 
-#include "extapp_api.h"
+#elif defined LINUX
 
-int extapp_main()
-{
-    return mainFunction();
-}
+    #include <ncurses.h>
+
+
+    int main() {
+            // the game
+        return main_function();
+    }
 
 #endif
